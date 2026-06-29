@@ -3,12 +3,19 @@ const descInput = document.getElementById('desc');
 const saveBtn = document.getElementById('save-btn');
 const noteContainer = document.getElementById('notes-container');
 const note = document.querySelector('.note')
+const noteMsg = document.getElementById('note-msg')
+
 
 function loadNotes() {
     fetch('/notes')
         .then(res => res.json())
         .then(notes => {
             noteContainer.innerHTML = '';
+            titleInput.value = '';
+            descInput.value = '';
+            if (notes.length === 0) {
+                noteContainer.innerHTML = ` <div id="note-msg">Your notes will appear here.</div>`
+            }
             notes.forEach((note, index) => {
                 const noteElement = document.createElement('div');
                 noteElement.classList.add('note')
@@ -49,5 +56,5 @@ saveBtn.addEventListener('click', () => {
         .then(() => loadNotes());
 })
 
-    
+
 
