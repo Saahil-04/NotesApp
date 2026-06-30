@@ -5,6 +5,7 @@ const noteContainer = document.getElementById('notes-container');
 const note = document.querySelector('.note')
 const noteMsg = document.getElementById('note-msg')
 
+let editIndex = null;
 
 function loadNotes() {
     fetch('/notes')
@@ -23,6 +24,7 @@ function loadNotes() {
                 <h2>${note.title}</h2>
                 <p>${note.description}</p>
                 <button onclick="deleteNote(${index})">Delete</button>
+                <button onclick="editNote(${index})">Edit</button>
                 `
                 noteContainer.appendChild(noteElement)
             })
@@ -37,9 +39,18 @@ function deleteNote(index) {
         .then(() => loadNotes())
 }
 
+function editNote(index) {
+    fetch('/notes')
+        .then(res => res.json())
+        .then(notes => {
+            titleInput.value = notes[index].title;
+            descInput.value = notes[index].description;
+            editIndex = index;
+        })
+    saveBtn.textContent = "Update Note"
+}
 
-saveBtn.addEventListener('click', () => {
-
+function saveNote() {
     const title = titleInput.value.trim();
     const description = descInput.value.trim();
 
@@ -49,16 +60,37 @@ saveBtn.addEventListener('click', () => {
     }
     const note = { title, description };
 
-    fetch("/notes",
-        {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(note),
-        }
-    )
-        .then(res => res.json())
-        .then(() => loadNotes());
-})
+    if (editIndex !== null && editIndex !== undefined) {
+        fetch(`/notes/${editIndex}`,
+            {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(note),
+            }
+        )
+            .then(res => res.json())
+            .then(() => loadNotes())
+
+        saveBtn.textContent = "Save Note";
+        editIndex = null;
+    } else {
+        fetch("/notes",
+            {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(note),
+            }
+        )
+            .then(res => res.json())
+            .then(() => loadNotes());
+
+    }
+
+}
+
+saveBtn.addEventListener('click', () => saveNote())
+
+
 
 
 
