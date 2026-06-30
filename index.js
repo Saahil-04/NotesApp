@@ -29,20 +29,24 @@ function loadNotes() {
         })
 }
 
+loadNotes()
+
 function deleteNote(index) {
     fetch(`/notes/${index}`, { method: 'DELETE' })
         .then(res => res.json())
         .then(() => loadNotes())
 }
 
-loadNotes()
 
 saveBtn.addEventListener('click', () => {
+
     const title = titleInput.value.trim();
     const description = descInput.value.trim();
 
-    if (!title || !description) alert("Fill both the fields!")
-
+    if (title === "" || description === "") {
+        alert("Fill both the fields!");
+        return;
+    }
     const note = { title, description };
 
     fetch("/notes",
