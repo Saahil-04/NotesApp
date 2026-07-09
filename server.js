@@ -8,6 +8,9 @@ const User = require('./models/User')
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const requireAuth = require('./middleware/auth');
+const [loginLimiter, signupLimiter] = require('./middleware/rateLimiter')
+ 
+
 
 app.use(express.json());
 app.use(express.static('.'))
@@ -90,7 +93,7 @@ app.delete('/notes/:id', requireAuth, async (req, res, next) => {
     }
 })
 
-app.post('/auth/signup', async (req, res, next) => {
+app.post('/auth/signup', signupLimiter, async (req, res, next) => {
     try {
         const { email, password } = req.body;
         const user = new User({ email, password });
@@ -102,7 +105,7 @@ app.post('/auth/signup', async (req, res, next) => {
     }
 })
 
-app.post('/auth/login', async (req, res, next) => {
+app.post('/auth/login', loginLimiter, async (req, res, next) => {
     try {
         const { email, password } = req.body;
         const user = await User.findOne({ email });
