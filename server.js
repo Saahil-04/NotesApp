@@ -9,7 +9,7 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const requireAuth = require('./middleware/auth');
 const [loginLimiter, signupLimiter] = require('./middleware/rateLimiter')
- 
+
 
 
 app.use(express.json());
@@ -136,8 +136,21 @@ app.use((err, req, res, next) => {
         return res.status(409).json({ message: 'Resource already Exists' });
     }
     if (err.name === 'ValidationError') {
-        const fields = Object.values(err.errors).map(e => e.message);
-        return res.status(400).json({ message: 'Validation Error', errors: fields });
+        const customMessages = {
+            email: {
+                required: "Email is required",
+                regexp: "Please enter a valid email"
+            },
+            password: {
+                required: "Password is required",
+                minlength: "Password should be atleast 8 characters"
+            }
+        }
+        const fields = Object.keys(err.errors).map(field => {
+            const kind = err.errors[field].kind;
+            return customMessages[field]?.[kind] || 'Invalid Input';
+        })
+        return res.status(400).json({ message: "Validation Error", errors: fields })
     }
     if (err.name === 'CastError') {
         return res.status(400).json({ message: 'Invalid ID format' });
