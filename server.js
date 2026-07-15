@@ -130,22 +130,22 @@ app.post('/auth/login', loginLimiter, async (req, res, next) => {
         next(err)
     }
 })
-
+const customMessages = {
+    email: {
+        required: "Email is required",
+        regexp: "Please enter a valid email"
+    },
+    password: {
+        required: "Password is required",
+        minlength: "Password should be atleast 8 characters"
+    }
+}
 app.use((err, req, res, next) => {
     if (err.code === 11000) {
         return res.status(409).json({ message: 'Resource already Exists' });
     }
     if (err.name === 'ValidationError') {
-        const customMessages = {
-            email: {
-                required: "Email is required",
-                regexp: "Please enter a valid email"
-            },
-            password: {
-                required: "Password is required",
-                minlength: "Password should be atleast 8 characters"
-            }
-        }
+
         const fields = Object.keys(err.errors).map(field => {
             const kind = err.errors[field].kind;
             return customMessages[field]?.[kind] || 'Invalid Input';
