@@ -18,8 +18,6 @@ if (!token || isTokenExpired(token)) {
     const descInput = document.getElementById('desc');
     const saveBtn = document.getElementById('save-btn');
     const noteContainer = document.getElementById('notes-container');
-    const note = document.querySelector('.note')
-    const noteMsg = document.getElementById('note-msg')
     const logoutBtn = document.getElementById('logout-btn');
 
     let editingNoteId = null;
