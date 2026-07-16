@@ -16,9 +16,11 @@ if (!token || isTokenExpired(token)) {
 
     const titleInput = document.getElementById('title');
     const descInput = document.getElementById('desc');
+    const cancelBtn = document.getElementById('cancel-btn');
     const saveBtn = document.getElementById('save-btn');
     const noteContainer = document.getElementById('notes-container');
     const logoutBtn = document.getElementById('logout-btn');
+
 
     let editingNoteId = null;
     let currentNotes = []
@@ -69,8 +71,8 @@ if (!token || isTokenExpired(token)) {
                     editBtn.addEventListener('click', () => editNote(note._id))
                     noteElement.appendChild(titleElement)
                     noteElement.appendChild(descElement)
-                    noteElement.appendChild(deleteBtn)
                     noteElement.appendChild(editBtn)
+                    noteElement.appendChild(deleteBtn)
                     noteContainer.appendChild(noteElement)
                 })
             })
@@ -98,6 +100,7 @@ if (!token || isTokenExpired(token)) {
         descInput.value = note.description;
         editingNoteId = id;
         saveBtn.textContent = "Update Note"
+        cancelBtn.style.display = 'block';
     }
 
     function saveNote() {
@@ -159,6 +162,15 @@ if (!token || isTokenExpired(token)) {
         localStorage.removeItem('token');
         window.location.href = '/login.html';
     });
+
+    cancelBtn.addEventListener('click', () => {
+        titleInput.value = '';
+        descInput.value = '';
+        editingNoteId = null;
+        saveBtn.textContent = "Save Note";
+        cancelBtn.style.display = 'none';
+    })
+
     window.addEventListener('pageshow', (event) => {
         if (event.persisted) {
             const currentToken = localStorage.getItem('token');
