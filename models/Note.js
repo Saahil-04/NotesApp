@@ -11,10 +11,14 @@ const noteSchema = new Schema({
     title: {
         type: String,
         required: true,
+        trim: true,
+        maxlength: [100, 'Title cannot exceed 100 characters']
     },
     description: {
         type: String,
         required: true,
+        trim: true,
+        maxlength: [2000, 'Description cannot exceed 2000 characters']
     },
 
 }, {

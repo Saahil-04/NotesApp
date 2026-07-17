@@ -138,7 +138,16 @@ const customMessages = {
     password: {
         required: "Password is required",
         minlength: "Password should be atleast 8 characters"
+    },
+    title: {
+        required: "Title is required",
+        maxlength: "Title cannot exceed 100 characters"
+    },
+    description: {
+        required: "Description is required",
+        maxlength: "Description cannot exceed 2000 characters"
     }
+
 }
 app.use((err, req, res, next) => {
     if (err.code === 11000) {
@@ -150,6 +159,7 @@ app.use((err, req, res, next) => {
             const kind = err.errors[field].kind;
             return customMessages[field]?.[kind] || 'Invalid Input';
         })
+        console.log(err);
         return res.status(400).json({ message: "Validation Error", errors: fields })
     }
     if (err.name === 'CastError') {

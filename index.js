@@ -134,6 +134,8 @@ if (!token || isTokenExpired(token)) {
                 }).catch(err => {
                     console.error(err)
                     alert("Something went wrong updating the note. Please try again.")
+                }).finally(() => {
+                    cancelBtn.style.display = 'none';
                 })
         } else {
             authFetch("/notes",
