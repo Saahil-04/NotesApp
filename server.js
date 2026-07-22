@@ -2,6 +2,7 @@ require('dotenv').config()
 
 const express = require('express');
 const app = express();
+app.set('trust proxy', 1);
 const mongoose = require('mongoose');
 const Note = require('./models/Note')
 const User = require('./models/User')
@@ -13,7 +14,9 @@ const [loginLimiter, signupLimiter] = require('./middleware/rateLimiter')
 
 
 app.use(express.json());
-app.use(express.static('.'))
+app.use(express.static('public'));
+
+const PORT = process.env.PORT || 3000;
 
 const connectDB = async () => {
     try {
@@ -169,6 +172,6 @@ app.use((err, req, res, next) => {
     return res.status(500).json({ message: 'Something went wrong!' });
 });
 
-app.listen(3000, () => {
-    console.log("Server running on Port 3000")
+app.listen(PORT, () => {
+    console.log("Server running on Port " + PORT);
 });
